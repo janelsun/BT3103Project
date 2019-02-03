@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Parcel Sandbox</title>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" type="text/css" href="src/styles.css" />
+  </head>
+
+  <body>
+    <div class="header">
+      <a href="#default" class="logo">CompanyLogo</a>
+      <div class="header-right"><a href="#logout">Log Out</a></div>
+    </div>
+
+    <div class="sidebar">
+      <a class="active" href="#academicprogress">Academic Progress</a>
+      <a href="#timetable">Time Table</a> <a href="#moduleinfo">Module Info</a>
+      <a href="#recommendation">Recommendation</a>
+    </div>
+    <div id="profile" class="content">
+      <div class="profilepicture">
+        <img
+          v-bind:src="personalInfo.profilePic"
+          style="float:left;width:150px;height:220px"
+        />
+      </div>
+
+      <div class="information" :style="{'padding-left':'200px'}">
+        <p>Name: {{personalInfo.name}}</p>
+        <p>Cohort: {{degreeInfo.cohortYear}}</p>
+        <p>Home Faculty: {{degreeInfo.homeFaculty1}}</p>
+        <p>Academic Major: {{degreeInfo.academicMajor1}}</p>
+        <p>Degree: {{degreeInfo.academicDegree1}}</p>
+        <p v-if="!degreeInfo.academicMajor2 == ''">
+          Second Major: {{degreeInfo.academicMajor2}}
+        </p>
+        <p v-if="!degreeInfo.academicMinor == ''">
+          Academic Minor: {{degreeInfo.academicMinor}}
+        </p>
+        <p></p>
+      </div>
+      <br /><br /><br /><br />
+      <div class="academicProgress">
+        <p><b>Current CAP</b></p>
+        <div class="container">
+          <div
+            :style="{
+						 'background-color': '#4caf50',
+						 width:currentCAP/5.0*100+'%'
+					}"
+          >
+            {{currentCAP}}/5.0
+          </div>
+        </div>
+
+        <p><b>Degree Progress</b></p>
+        <div class="container">
+          <div
+            :style="{ 'background-color': '#2196f3', 
+					width:totalMCEarned/totalMCRequired*100+'%' }"
+          >
+            {{totalMCEarned}}/{{totalMCRequired}} Modular Credits
+          </div>
+        </div>
+        <br /><br /><br />
+        <line-chart
+          :data="bySemCAP[1]"
+          :label="bySemCAP[0]"
+          :options="{responsive: true, maintainAspectRatio: false}"
+        ></line-chart>
+        <br /><br /><br />
+        <p><b>Requirements Breakdown</b></p>
+        <table>
+          <tr>
+            <th>Module Type</th>
+            <th>MCs Required</th>
+            <th>MCs Earned</th>
+          </tr>
+          <tr v-for="(reqtype, index) in byModuleTypeProgress">
+            <td>{{reqtype.type}}</td>
+            <td>{{reqtype.number}}</td>
+            <td>{{reqtype.earned}}</td>
+          </tr>
+          <tfoot>
+            <tr>
+              <td>Total</td>
+              <td>{{totalMCRequired}}</td>
+              <td>{{totalMCEarned}}</td>
+            </tr>
+          </tfoot>
+        </table>
+        <br /><br /><br />
+        <div class="moduleInfo">
+          <p><b>Grades Breakdown</b></p>
+          <table id="moduleTable">
+            <tr>
+              <th onclick="sortTable(0)">Module Code</th>
+              <th onclick="sortTable(1)">Module Name</th>
+              <th onclick="sortTable(2)">Modular Credits</th>
+              <th onclick="sortTable(3)">Module Type</th>
+              <th onclick="sortTable(4)">Semester Taken</th>
+              <th onclick="sortTable(5)">Grades Earned</th>
+              <th onclick="sortTable(6)">S/U?</th>
+            </tr>
+            <tr v-for="(module, index) in modulesTaken">
+              <td>{{module.moduleCode}}</td>
+              <td>{{module.moduleName}}</td>
+              <td>{{module.modularCredits}}</td>
+              <td>{{module.moduleType}}</td>
+              <td>{{module.semesterTaken}}</td>
+              <td>{{module.gradeEarned}}</td>
+              <td>{{module.whetherSU}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="academicprogress.js"></script>
+    <script src="sortingTable.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+    <script src="https://unpkg.com/vue-chartjs/dist/vue-chartjs.min.js"></script>
+  </body>
+</html>
